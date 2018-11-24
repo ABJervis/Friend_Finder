@@ -179,3 +179,130 @@
     <!--add on click to capture data-->
     <button type="button" class="btn btn-primary btn-lg">Submit</button>
 </body>
+
+
+
+<!--Convert each user's results into a simple array of numbers (ex: [5, 1, 4, 4, 5, 1, 2, 5, 4, 1]).
+With that done, compare the difference between current user's scores against those from other users, question by question. Add up the differences to calculate the totalDifference.
+Example:
+User 1: [5, 1, 4, 4, 5, 1, 2, 5, 4, 1]
+User 2: [3, 2, 6, 4, 5, 1, 2, 5, 4, 1]
+Total Difference: 2 + 1 + 2 = 5
+Remember to use the absolute value of the differences. Put another way: no negative solutions! Your app should calculate both 5-3 and 3-5 as 2, and so on.
+The closest match will be the user with the least amount of difference.
+Once you've found the current user's most compatible friend, display the result as a modal pop-up.
+
+The modal should display both the name and picture of the closest match.-->
+
+
+
+<!-- modal goes here-->
+
+<div id="results-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+    
+<!-- Trigger the modal with a button -->
+<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Modal Header</h4>
+      </div>
+      <div class="modal-body">
+        <p>Some text in the modal.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+      
+
+<!--enter javascript-->
+
+<script type="text/javascript">
+
+    // need to grab user inputs, define variables to hold information
+
+    var surveyQuestions = $(".chosen");
+    var name = $("#name").val().trim();
+    var photo = $("#photo").val();
+    var scores = [];
+    var valid = true;
+
+
+
+// Set the on click to capture selections
+
+    $("#submit").on("click", function(event) {
+    event.preventDefault();
+  // Form validation
+    function validateForm() {
+        var isValid = true;
+        $(".form-control").each(function() {
+        if ($(this).val() === "") {
+            isValid = false;
+        }
+        });
+        $(".chosen-select").each(function() {
+        if ($(this).val() === "") {
+            isValid = false;
+        }
+        });
+        return isValid;
+    }
+  // If all required fields are filled
+    if (validateForm()) {
+    // Create an object for the user"s data
+        var userData = {
+        name: $("#name").val(),
+        photo: $("#photo").val(),
+        scores: [
+            $("#q1").val(),
+            $("#q2").val(),
+            $("#q3").val(),
+            $("#q4").val(),
+            $("#q5").val(),
+            $("#q6").val(),
+            $("#q7").val(),
+            $("#q8").val(),
+            $("#q9").val(),
+            $("#q10").val()
+        ]
+        };
+        // AJAX post the data to the friends API.
+        $.post("/api/friends", userData, function(data){
+        if (data){
+            alert("Thanks for completing the survey!");
+        } else {
+            alert("Please finish answering the questions.");
+        }
+        });
+    
+        $.post("/api/friends", friends, function(data) {
+        // Grab the result from the AJAX post so that the best match's name and photo are displayed.
+        $("#match-name").text(matches[0].name);
+        $("#match-img").attr("src", matches[0].photo);
+        // Show the modal with the best match
+        $("#results-modal").modal("toggle");
+        });
+    } else {
+        alert("Please fill out all fields before submitting!");
+    } 
+    });
+</script>
+
+
+
+
+</body>
+
+</html>
