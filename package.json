@@ -1,7 +1,7 @@
 {
-  "name": "Friend_Finder",
+  "name": "friend-finder",
   "version": "1.0.0",
-  "description": "",
+  "description": "match game",
   "main": "server.js",
   "dependencies": {
     "express": "^4.16.4",

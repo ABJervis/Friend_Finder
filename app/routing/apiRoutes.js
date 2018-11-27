@@ -6,7 +6,7 @@ This route will also be used to handle the compatibility logic.*/
 
 //require the file to connect friends file to api routes
 
-var friends = require("..data/friends");
+var friends = require("..data/friends.js");
 
 //routing
 
@@ -21,27 +21,31 @@ module.exports = function(app) {
       //post
     app.post("/api/friends", function(req, res){
         
-        //code that analyzes comparison of inputs from dropdown menu to value of each monster. will evaluate absolute value of selected value sum vs. monster sum. 
-          
         console.log(req.body);
-       
-       var surveyResults = req.body.scores; 
-       var bestFriend = {};
+
+        //code that analyzes comparison of inputs from dropdown menu to value of each monster. will evaluate absolute value of selected value sum vs. monster sum. 
+       var userInput = req.body.scores;
+       var matchName = {};
+       var matchImage = '';
        var minDiff = 100;
+
        for (var i = 0; i<friends.length; i++){
            
-           var score = 0;
-           for (var j = 0; j <surveyResults.length; j++){
-                var question = Math.abs(surveyResults[j]-friends[i].scores[j]);
-                score += question;
+           var diff = 0;
+           for (var j = 0; j <userInput.length; j++){
+                var question = Math.abs(userInput[j]-friends[i].scores[j]);
+                diff += question;
            }
-           if (score < minDiff){
-               minDiff = score;
-               bestFriend = friends[i];
+           if (diff < minDiff){
+               minDiff = diff;
+               matchName = friends[i].name;
+               matchImage = friends[i].photo;
            }
        }
 
-        res.json(bestFriend);
+        res.json(matchName);
+
+    
 
     })
 };
@@ -62,5 +66,3 @@ module.exports = function(app) {
 
 
 
-
-}

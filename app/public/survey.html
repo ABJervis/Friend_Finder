@@ -5,13 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <title>Friend Finder</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script> 
 
-    <link rel = "stylesheet" href="/app/assets/style.css">
-
-    <title>Creature Close to You</title>
 </head>
 
 <!--enter bootstrap heading-->
@@ -175,13 +175,6 @@
         <br>
     </div>
 
-
-    <!--add on click to capture data-->
-    <button type="button" class="btn btn-primary btn-lg">Submit</button>
-</body>
-
-
-
 <!--Convert each user's results into a simple array of numbers (ex: [5, 1, 4, 4, 5, 1, 2, 5, 4, 1]).
 With that done, compare the difference between current user's scores against those from other users, question by question. Add up the differences to calculate the totalDifference.
 Example:
@@ -194,115 +187,92 @@ Once you've found the current user's most compatible friend, display the result 
 
 The modal should display both the name and picture of the closest match.-->
 
-
-
+<!-- submit button -->    
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#results"> Submit</button>
 <!-- modal goes here-->
-
 <div id="results-modal" class="modal fade" role="dialog">
         <div class="modal-dialog">
     
-<!-- Trigger the modal with a button -->
-<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>
-
-<!-- Modal -->
-<div id="myModal" class="modal fade" role="dialog">
-  <div class="modal-dialog">
-
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Modal Header</h4>
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h2 class="modal-title"><strong>Best Match</strong></h2>
+            </div>
+            <div class="modal-body">
+              <h2 id="match-name"></h2>   
+              <img id="match-img"  alt="">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+    
+        </div>
       </div>
-      <div class="modal-body">
-        <p>Some text in the modal.</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-    </div>
 
-  </div>
-</div>
       
 
 <!--enter javascript-->
+<!--need to grab user inputs, define variables to hold information-->
 
 <script type="text/javascript">
-
-    // need to grab user inputs, define variables to hold information
-
-    var surveyQuestions = $(".chosen");
-    var name = $("#name").val().trim();
-    var photo = $("#photo").val();
-    var scores = [];
-    var valid = true;
-
-
-
-// Set the on click to capture selections
-
-    $("#submit").on("click", function(event) {
-    event.preventDefault();
-  // Form validation
-    function validateForm() {
-        var isValid = true;
-        $(".form-control").each(function() {
-        if ($(this).val() === "") {
-            isValid = false;
-        }
-        });
-        $(".chosen-select").each(function() {
-        if ($(this).val() === "") {
-            isValid = false;
-        }
-        });
-        return isValid;
-    }
-  // If all required fields are filled
-    if (validateForm()) {
-    // Create an object for the user"s data
-        var userData = {
-        name: $("#name").val(),
-        photo: $("#photo").val(),
-        scores: [
-            $("#q1").val(),
-            $("#q2").val(),
-            $("#q3").val(),
-            $("#q4").val(),
-            $("#q5").val(),
-            $("#q6").val(),
-            $("#q7").val(),
-            $("#q8").val(),
-            $("#q9").val(),
-            $("#q10").val()
-        ]
-        };
-        // AJAX post the data to the friends API.
-        $.post("/api/friends", userData, function(data){
-        if (data){
-            alert("Thanks for completing the survey!");
-        } else {
-            alert("Please finish answering the questions.");
-        }
-        });
     
-        $.post("/api/friends", friends, function(data) {
-        // Grab the result from the AJAX post so that the best match's name and photo are displayed.
-        $("#match-name").text(matches[0].name);
-        $("#match-img").attr("src", matches[0].photo);
-        // Show the modal with the best match
-        $("#results-modal").modal("toggle");
+  //grab user information//
+
+        //setting up user inputs as jQuery to be used as global variables for later
+        var surveyAnswers = $(".chosen");
+        var name = $("#name").val().trim();
+        var photo = $("#photo").val();
+        var scores = [];
+        var valid = true;
+        //on-click event for when the user clicks the submit button
+        $("#search").on("click", function (event) {
+            event.preventDefault();
+            // use a for loop to grab the data, store it as an array
+            
+            for (var i = 0; i < surveyAnswers.length; i++) {
+                // need to make sure we are using absolute value of numbers..no negatives            
+                scores.push(parseInt(surveyAnswers[i].value));
+                //check how its going with a console log
+                console.log(surveyAnswers[i].value);
+            };
         });
-    } else {
-        alert("Please fill out all fields before submitting!");
-    } 
-    });
-</script>
 
+            //check to make sure entire form is completed, must have name, photo and all questions answered.
+            //check name and photo
 
-
+            if ($("#name").val() === "" || $("#photo").val() === "") {
+                valid = false;
+                //check questions
+            } else if ($(".chosen").val() === "empty") {
+                valid = false;
+                alert("Please complete the survey to find your friend.");
+            }
+                //if good to move forward, move forward. Turn into OBJECT
+            if (valid === true) {
+                var userInput = {
+                    name: name,
+                    photo: photo,
+                    scores: scores
+                }
+            }
+            $.post("/api/friends", userInput,
+                function (data) {
+                    
+                    console.log(data)
+                    $("#name").text(data.name);
+                    $("#photo").attr("src", data.photo);
+                    //Clear the form
+                    var surveyAnswers = $(".chosen").value("");
+                    var name = $("#name").val("");
+                    var photo = $("#photo").val("");
+                });
+    
+    
+    
+    </script>
 
 </body>
 
-</html>
+

@@ -1,4 +1,4 @@
-creaturesArray = [
+friendsArray = [
 
     {
         "name":"Pretty Kitty",
@@ -92,7 +92,7 @@ creaturesArray = [
 
 ]
 
-module.exports = creaturesArray;
+module.exports = friendsArray;
 
 
 
